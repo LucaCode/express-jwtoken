@@ -7,8 +7,8 @@ GitHub: LucaCode
 import express           = require('express');
 import crypto            = require('crypto');
 const jwt                = require('jsonwebtoken');
-import JwtEngineOptions, {InternalJwtEngineOptions} from "./JwtEngineOptions";
-import JwtToken            from "./JwtToken";
+import JwtEngineOptions, {InternalJwtEngineOptions} from "./jwtEngineOptions";
+import JwtToken            from "./jwtToken";
 
 declare module 'express-serve-static-core' {
     interface Request {
@@ -41,14 +41,26 @@ declare module 'express-serve-static-core' {
     }
 }
 
-type ExpressMiddlewareFunction = (req: express.Request, res: express.Response, next: express.NextFunction) => void;
+export type ExpressMiddlewareFunction = (req: express.Request, res: express.Response, next: express.NextFunction) => void;
+
+interface SignOptions {
+    algorithm ?: string,
+    expiresIn ?: number | string,
+    notBefore ?: number | string
+}
 
 export default class JwtEngine {
 
     private readonly _options : InternalJwtEngineOptions;
+    private readonly _signOptions : SignOptions;
 
     constructor(options: JwtEngineOptions){
         this._options = JwtEngine.processOptions(options);
+        this._signOptions = {
+            algorithm : this._options.algorithm,
+            expiresIn : this._options.expiresIn,
+            notBefore : this._options.notBefore
+        }
     }
 
     /**
@@ -62,27 +74,56 @@ export default class JwtEngine {
 
         return (req, res, next) => {
 
-            jwtEngine.processToken(req);
+            jwtEngine.verify(req,res);
 
             res.deauthenticate = () => {
                 req.token = null;
                 req.signedToken = null;
                 jwtEngine.options.removeToken(res);
-            }
+            };
 
+            res.authenticate = (token) => {
+                jwtEngine.sign(token,req,res);
+            };
 
+            next();
         };
     }
 
-    processToken(req : express.Request) {
-        const signedToken = this.options.getToken(req);
+    /**
+     * Sign a token.
+     * @param token
+     * @param req
+     * @param res
+     */
+    sign(token : Record<string,any>, req : express.Request, res : express.Response) {
+        const signToken = jwt.sign(token,this._options.privateKey,this._signOptions);
+        req.token = token;
+        req.signedToken = signToken;
+        this._options.setToken(signToken,token,res);
+    }
+
+    /**
+     * Try to verify the singed token of an request.
+     * @param req
+     * @param res
+     */
+    verify(req : express.Request, res : express.Response) {
+        const signedToken = this._options.getToken(req);
         if(signedToken !== null) {
             try {
                 req.signedToken = signedToken;
-                req.token = jwt.verify(signedToken,this.options.publicKey);
+                req.token = jwt.verify(signedToken,this._options.publicKey,{
+                    algorithms : [this._options.algorithm]
+                });
             }
             catch (e) {
-
+                req.signedToken = signedToken;
+                req.token = null;
+                this._options.removeToken(res);
+                if(typeof this._options.onNotValidToken === 'function'){
+                    this._options.onNotValidToken(signedToken,req,res);
+                }
             }
         }
         else {
@@ -91,8 +132,11 @@ export default class JwtEngine {
         }
     }
 
+    /**
+     * Process the JwtEngineOptions and loading default options.
+     * @param options
+     */
     static processOptions(options: JwtEngineOptions): InternalJwtEngineOptions {
-
         //set the private/public keys to secret key.
         let publicKey = options.publicKey;
         let privateKey = options.privateKey;

@@ -5,5 +5,5 @@ GitHub: LucaCode
  */
 
 export default interface JwtToken extends Record<string,any> {
-    exp : number
+    exp ?: number
 }

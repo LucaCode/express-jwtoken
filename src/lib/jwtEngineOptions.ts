@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import JwtToken from "./JwtToken";
+import JwtToken from "./jwtToken";
 
 export default interface JwtEngineOptions {
 
@@ -54,6 +54,14 @@ export default interface JwtEngineOptions {
      * @param res
      */
     removeToken ?: (res : Express.Response) => void,
+
+    /**
+     * Event function that gets invoked when a client signed token is not valid.
+     * @param signToken
+     * @param req
+     * @param res
+     */
+    onNotValidToken ?: (signedToken : string,req : Express.Request,res : Express.Response) => void;
 
     /**
      * Token expressed in seconds (number) or a string describing a time.
