@@ -23,7 +23,9 @@
     "dist/**/*"
   ],
   "dependencies": {
-    "jsonwebtoken": "8.5.1"
+    "@types/express": "4.16.1",
+    "jsonwebtoken": "8.5.1",
+    "crypto": "1.0.1"
   },
   "devDependencies": {
     "gulp": "4.0.1",

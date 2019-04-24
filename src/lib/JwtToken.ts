@@ -4,6 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import JwtEngine from "./lib/JwtEngine";
-
-export default JwtEngine.generateEngine
+export default interface JwtToken extends Record<string,any> {
+    exp : number
+}
