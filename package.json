@@ -6,9 +6,28 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "mocha -r ts-node/register test/**/*.ts",
+    "test": "nyc mocha",
     "build": "gulp compile",
     "watch": "gulp watch"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
   },
   "author": {
     "name": "Luca Scarignella",
@@ -28,10 +47,18 @@
     "crypto": "1.0.1"
   },
   "devDependencies": {
+    "@types/mocha": "5.2.6",
+    "body-parser": "1.18.3",
+    "chai": "4.2.0",
+    "chai-http": "4.2.1",
+    "cookie-parser": "1.4.4",
+    "express": "4.16.4",
     "gulp": "4.0.1",
     "gulp-typescript": "5.0.1",
-    "typescript": "3.4.5",
     "mocha": "6.1.4",
-    "ts-node": "8.1.0"
+    "nyc": "14.0.0",
+    "source-map-support": "^0.5.12",
+    "ts-node": "8.1.0",
+    "typescript": "3.4.5"
   }
 }

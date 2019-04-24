@@ -69,6 +69,7 @@ export default interface JwtEngineOptions {
      * otherwise milliseconds unit is used by default ("120" is equal to "120ms").
      * @example
      * 60, "2 days", "10h", "7d".
+     * @default '1 day'
      */
     expiresIn ?: string | number,
 
@@ -78,12 +79,13 @@ export default interface JwtEngineOptions {
      * otherwise milliseconds unit is used by default ("120" is equal to "120ms").
      * @example
      * 60, "2 days", "10h", "7d".
+     * @default undefined
      */
     notBefore ?: string | number,
 
     /**
      * Algorithm for encrypting and decrypt the token.
-     * The default value is the HS256 Algorithm.
+     * @default HS256 Algorithm.
      */
     algorithm ?:  string,
 }
@@ -93,5 +95,7 @@ export interface InternalJwtEngineOptions extends JwtEngineOptions {
     setToken : (signToken : string,plainToken : JwtToken,res : Express.Response) => void,
     removeToken : (res : Express.Response) => void,
     privateKey : string,
-    publicKey : string
+    publicKey : string,
+    algorithm :  string,
+    expiresIn : string | number
 }

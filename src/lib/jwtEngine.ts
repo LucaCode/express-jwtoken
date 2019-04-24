@@ -37,7 +37,7 @@ declare module 'express-serve-static-core' {
          * You also can use this method to refresh/update a token.
          * @param token
          */
-        authenticate : (token : Record<string,any>) => void
+        authenticate : (token ?: Record<string,any>) => void
     }
 }
 
@@ -58,8 +58,10 @@ export default class JwtEngine {
         this._options = JwtEngine.processOptions(options);
         this._signOptions = {
             algorithm : this._options.algorithm,
-            expiresIn : this._options.expiresIn,
-            notBefore : this._options.notBefore
+            expiresIn : this._options.expiresIn
+        };
+        if(options.notBefore){
+            this._signOptions.notBefore = options.notBefore;
         }
     }
 
@@ -82,7 +84,7 @@ export default class JwtEngine {
                 jwtEngine.options.removeToken(res);
             };
 
-            res.authenticate = (token) => {
+            res.authenticate = (token = {}) => {
                 jwtEngine.sign(token,req,res);
             };
 
@@ -150,6 +152,9 @@ export default class JwtEngine {
         return {
             publicKey,
             privateKey,
+            algorithm : options.algorithm || 'HS256',
+            expiresIn : options.expiresIn || '1 day',
+            notBefore : options.notBefore,
             getToken: options.getToken || ((req: any) => {
                 return req.cookies ? (
                         typeof req.cookies.jwtToken === 'string' ?
@@ -170,7 +175,8 @@ export default class JwtEngine {
                 } else {
                     throw new Error('Express.cookieParser is required with default get/set/remove token options.');
                 }
-            })
+            }),
+            onNotValidToken : options.onNotValidToken
         };
     }
 
