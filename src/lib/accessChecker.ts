@@ -45,6 +45,7 @@ export const reqNotAuthenticated : ExpressMiddlewareFunction = (req, res, next) 
 
 /**
  * Middleware for check the token contains a specific key value pair.
+ * Notice if the token is null the request will not be blocked!
  * @param key
  * @param value
  */
