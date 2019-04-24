@@ -47,8 +47,11 @@ valid the assigned value will be null. You also can provide extra options as a p
 >Notice that the engine with the default options will use cookies to set, get or remove the signed token from a client. 
 So make sure that you use the **cookie-parser** before using the JwtEngine if you don't provide custom options.
 
-```js
+```typescript
 import {jwtEngine} from "express-jwtoken";
+import express = require('express');
+
+const app = express();
 
 //If using the default options
 const cookieParser = require('cookie-parser');
@@ -134,10 +137,11 @@ You also can use these predefined middleware function from this library:
 This middleware function will check if the client is authenticated with a token. Otherwise, 
 it will block the request with a 403 HTTP status code.
 
-```js
+```typescript
 import {reqAuthenticated} from "express-jwtoken";
+import express = require('express');
 
-const api = Router();
+const api = express.Router();
 
 api.use(reqAuthenticated);  
 ```
@@ -147,10 +151,11 @@ api.use(reqAuthenticated);
 This middleware function will check if the client is not authenticated. Otherwise, 
 it will block the request with a 403 HTTP status code.
 
-```js
+```typescript
 import {reqNotAuthenticated} from "express-jwtoken";
+import express = require('express');
 
-const api = Router();
+const api = express.Router();
 
 api.use(reqNotAuthenticated);  
 ```
@@ -160,10 +165,11 @@ api.use(reqNotAuthenticated);
 This middleware function will check if the client is authenticated and the token contains specific key-value pairs. 
 Otherwise, it will block the request with a 403 HTTP status code.
 
-```js
+```typescript
 import {reqAuthenticatedAndContains} from "express-jwtoken";
+import express = require('express');
 
-const api = Router();
+const api = express.Router();
 
 api.use(reqAuthenticatedAndContains({userGroup : 'admin'}));  
 ```
