@@ -44,9 +44,13 @@ Also, it will try to get and verify the token from the request and attach the pl
 (encrypted token) to the request object. If there is no token or the token is not 
 valid the assigned value will be null. You also can provide extra options as a parameter.
 
+>Notice that the engine with the default options will use cookies to set, get or remove the signed token from a client. 
+So make sure that you use the cookie-parser before using the JwtEngine if you don't provide custom options.
+
 ```js
 import {jwtEngine} from "express-jwtoken";
-app.use(jwtEngine());
+
+app.use(jwtEngine(options));
 ```
 
 ### The Request object
@@ -69,17 +73,21 @@ You also can use this method to refresh a token, but notice that the token paylo
 The jwtEngine functions can take optional a jwtEngineOptions object as a parameter. 
 This object can specify the following options:
 
+* `modifierTokenEngine` (`ModifierTokenEngine`) - Engine component to modifier the token that means set, get or remove the token from the client.
+                                                  Default is the CookieModifierTokenEngine which requires the cookie-parser before using the JwtEngine. 
+                                                  This engine will use cookies to set, get or remove the signed token from the client.
+
 * `secretKey` (`string`) - The secret key for encrypting and decrypt the token.
                            The default value is a random string.
                            Notice that this option is only used if no public and private key is defined.
                            
-* `privateKey` (`string`) - The public secret key for encrypting and decrypt the token.
-                            For using the public key, you also need to define the private key.
-                            Otherwise, the secret key will be used.                                                    
+* `privateKey` (`string`) - The private secret key for encrypting and decrypt the token.
+                            For using the private key, you also need to define the public key.
+                            Otherwise, the secret key will be used.                        
 
-* `publicKey` (`string`) - The private secret key for encrypting and decrypt the token.
-                           For using the private key, you also need to define the public key.
-                           Otherwise, the secret key will be used.     
+* `publicKey` (`string`) - The public secret key for encrypting and decrypt the token.
+                           For using the public key, you also need to define the private key.
+                           Otherwise, the secret key will be used.                                 
 
 * `expiresIn` (`string | number`) - Token expressed in seconds (number) or a string describing a time.
                                     If you use a string be sure you provide the time units (days, hours, etc),
@@ -94,4 +102,65 @@ This object can specify the following options:
                                     Default value is: undefined.
                                     
 * `algorithm` (`string`) -  Algorithm for encrypting and decrypt the token.
-                            Default value is the HS256 Algorithm.                          
+                            Default value is the HS256 Algorithm.     
+                            
+* `onNotValidToken` (`Function ((signedToken : string,req : Request,res : Response) => void)`) - 
+Event function that gets invoked when a client signed token is not valid.  
+
+### Own ModifierTokenEngine
+The ModifierTokenEngine will be used to set, get or remove the token from the client. 
+You can create your engine by creating an object with these following properties:
+
+>Notice that the module also exports a typescript interface for this.
+
+* `getToken` (`Function ((req : Request) => string | null)`) - Function for get the signed token from the request.
+                                The method can return the signed token as a string, or null if there is no signed token.
+                                
+* `setToken` (`Function ((signToken : string,plainToken : JwtToken,res : Response) => void)`) - Function to set the token to the response.  
+
+* `removeToken` (`Function ((res : Response) => void)`) - Function to tell the client to remove the token.   
+
+### Check Access  
+
+For checking the access, you can create your own middleware functions that make use of the plain token on the request object.
+You also can use these predefined middleware function from this library:
+
+#### reqAuthenticated      
+
+This middleware function will check if the client is authenticated with a token. Otherwise, 
+it will block the request with a 403 HTTP status code.
+
+```js
+import {reqAuthenticated} from "express-jwtoken";
+
+const api = Router();
+
+api.use(reqAuthenticated);  
+```
+
+#### reqNotAuthenticated      
+
+This middleware function will check if the client is not authenticated. Otherwise, 
+it will block the request with a 403 HTTP status code.
+
+```js
+import {reqNotAuthenticated} from "express-jwtoken";
+
+const api = Router();
+
+api.use(reqNotAuthenticated);  
+```
+                           
+#### reqAuthenticatedAndContains     
+
+This middleware function will check if the client is authenticated and the token contains specific key-value pairs. 
+Otherwise, it will block the request with a 403 HTTP status code.
+
+```js
+import {reqAuthenticatedAndContains} from "express-jwtoken";
+
+const api = Router();
+
+api.use(reqAuthenticatedAndContains({userGroup : 'admin'}));  
+```
+                                                      

@@ -17,15 +17,15 @@ export default interface JwtEngineOptions {
     secretKey ?: string,
 
     /**
-     * The public secret key for encrypting and decrypt the token.
-     * For using the public key, you also need to define the private key.
+     * The private secret key for encrypting and decrypt the token.
+     * For using the private key, you also need to define the public key.
      * Otherwise, the secret key will be used.
      */
     privateKey ?: string,
 
     /**
-     * The private secret key for encrypting and decrypt the token.
-     * For using the private key, you also need to define the public key.
+     * The public secret key for encrypting and decrypt the token.
+     * For using the public key, you also need to define the private key.
      * Otherwise, the secret key will be used.
      */
     publicKey ?: string,
