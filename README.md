@@ -78,7 +78,7 @@ It will tell the client to remove the token and set the token and signed token p
 You also can use this method to refresh a token, but notice that the token payload will not be merged with the old token payload. Also, it will return the new singed token.
 
 ### Options
-The jwtEngine functions can take optional a jwtEngineOptions object as a parameter. 
+The jwtEngine function can take optional a jwtEngineOptions object as a parameter. 
 This object can specify the following options:
 
 * `modifierTokenEngine` (`ModifierTokenEngine`) - Engine component to modifier the token that means set, get or remove the token from the client.
