@@ -38,7 +38,7 @@ $ npm install --save express-jwtoken
 
 ## Usage
 
-First, you have to set the leading middleware. 
+First, you have to set the jwtEngine middleware. 
 This middleware will add functionality to the express response and request object. 
 Also, it will try to get and verify the token from the request and attach the plain 
 (encrypted token) to the request object. If there is no token or the token is not 
@@ -57,6 +57,7 @@ const app = express();
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
+//jwtEngine middleware
 app.use(jwtEngine(options));
 ```
 
