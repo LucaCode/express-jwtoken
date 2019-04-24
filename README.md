@@ -25,7 +25,7 @@
 </h1>
 
 ## What is Express-jwtoken?
-Express-jwtoken is an extension library for express, 
+**Express-jwtoken** is an extension library for express, 
 that adds an authentication system which uses the [JSON Web Tokens](https://tools.ietf.org/html/rfc7519) standard.
 The significant advantage of JSON Web Tokens is that you don't need to store session information on the server, 
 this makes it easy to scale your backend on more servers.
@@ -45,10 +45,14 @@ Also, it will try to get and verify the token from the request and attach the pl
 valid the assigned value will be null. You also can provide extra options as a parameter.
 
 >Notice that the engine with the default options will use cookies to set, get or remove the signed token from a client. 
-So make sure that you use the cookie-parser before using the JwtEngine if you don't provide custom options.
+So make sure that you use the **cookie-parser** before using the JwtEngine if you don't provide custom options.
 
 ```js
 import {jwtEngine} from "express-jwtoken";
+
+//If using the default options
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 app.use(jwtEngine(options));
 ```
@@ -74,7 +78,7 @@ The jwtEngine functions can take optional a jwtEngineOptions object as a paramet
 This object can specify the following options:
 
 * `modifierTokenEngine` (`ModifierTokenEngine`) - Engine component to modifier the token that means set, get or remove the token from the client.
-                                                  Default is the CookieModifierTokenEngine which requires the cookie-parser before using the JwtEngine. 
+                                                  Default is the CookieModifierTokenEngine which requires the **cookie-parser** before using the JwtEngine. 
                                                   This engine will use cookies to set, get or remove the signed token from the client.
 
 * `secretKey` (`string`) - The secret key for encrypting and decrypt the token.
