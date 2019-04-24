@@ -34,6 +34,20 @@
     "email": "lucacode1@gmail.com",
     "url": "https://luca.scaringella.de"
   },
+  "keywords": [
+    "jwt",
+    "express",
+    "middleware",
+    "http",
+    "authentication",
+    "jsonWebToken",
+    "token",
+    "protect",
+    "scalable",
+    "secure",
+    "easy",
+    "tools"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/LucaCode/express-jwtoken.git"

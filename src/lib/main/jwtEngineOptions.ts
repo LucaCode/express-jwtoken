@@ -5,6 +5,7 @@ GitHub: LucaCode
  */
 
 import JwtToken from "./jwtToken";
+import ModifierTokenEngine from "../modifierTokenEngine/modifierTokenEngine";
 
 export default interface JwtEngineOptions {
 
@@ -30,30 +31,10 @@ export default interface JwtEngineOptions {
     publicKey ?: string,
 
     /**
-     * Function for get the signed token from the request.
-     * Default function will try to get the token from a cookie (cookies.jwtToken),
-     * so the cookie-parser is required before using the JwtEngine.
-     * @param req
+     * Engine component to modifier the token that means set, get or remove the token from the client.
+     * @default is the CookieModifierTokenEngine which requires the cookie-parser before using the JwtEngine.
      */
-    getToken ?: (req : Express.Request) => string | null,
-
-    /**
-     * Function to set the signed token to the response.
-     * Default function will set the token with a cookie (cookies.jwtToken),
-     * so the cookie-parser is required before using the JwtEngine.
-     * @param signToken
-     * @param res
-     */
-    setToken ?: (signToken : string,plainToken : JwtToken,res : Express.Response) => void,
-
-    /**
-     * Function to tell the response to remove the token.
-     * Default function will remove the token from the cookie (cookies.jwtToken),
-     * so the cookie-parser is required before using the JwtEngine.
-     * @param signToken
-     * @param res
-     */
-    removeToken ?: (res : Express.Response) => void,
+    modifierTokenEngine ?: ModifierTokenEngine,
 
     /**
      * Event function that gets invoked when a client signed token is not valid.
@@ -91,11 +72,9 @@ export default interface JwtEngineOptions {
 }
 
 export interface InternalJwtEngineOptions extends JwtEngineOptions {
-    getToken : (req : Express.Request) => string | null,
-    setToken : (signToken : string,plainToken : JwtToken,res : Express.Response) => void,
-    removeToken : (res : Express.Response) => void,
     privateKey : string,
     publicKey : string,
     algorithm :  string,
-    expiresIn : string | number
+    expiresIn : string | number,
+    modifierTokenEngine : ModifierTokenEngine
 }
