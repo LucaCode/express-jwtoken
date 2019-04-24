@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import express   = require('express');
 import bodyParser= require('body-parser');
-import {jwtEngine, reqAuthenticated, reqNotAuthenticated, tokenContains} from "../src";
+import {jwtEngine, reqAuthenticated, reqAuthenticatedAndContains, reqNotAuthenticated} from "../src";
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -27,8 +27,7 @@ normalApi.get('/data',(req,res) => {
 
 //api with authenticated and token contains protection.
 const adminApi = express.Router();
-adminApi.use(reqAuthenticated);
-adminApi.use(tokenContains('isAdmin',true));
+adminApi.use(reqAuthenticatedAndContains({isAdmin : true}));
 adminApi.get('/data',(req,res) => {
     res.status(200).send('Admin Api');
 });

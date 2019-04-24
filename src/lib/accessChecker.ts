@@ -44,23 +44,28 @@ export const reqNotAuthenticated : ExpressMiddlewareFunction = (req, res, next) 
 };
 
 /**
- * Middleware for check the token contains a specific key value pair.
- * Notice if the token is null the request will not be blocked!
- * @param key
- * @param value
+ * Middleware for check the client is authenticated and
+ * the token contains specific key-value pairs.
+ * @param contains
  */
-export const tokenContains : (key : string,value : any) => ExpressMiddlewareFunction
-    = (key,value) => {
+export const reqAuthenticatedAndContains: (contains : Record<string,any>) => ExpressMiddlewareFunction
+    = (contains) => {
     return (req, res, next) => {
         if(req.token === null) {
-           next();
+            block(res);
         }
         else {
-            if(req.token[key] === value) {
-                next();
+            const token = req.token;
+            let blocked = false;
+            for(let key in contains) {
+                if(contains.hasOwnProperty(key) &&  contains[key] !== token[key]) {
+                    block(res);
+                    blocked = true;
+                    break;
+                }
             }
-            else {
-                block(res);
+            if(!blocked){
+                next();
             }
         }
     }
