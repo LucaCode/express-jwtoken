@@ -16,7 +16,11 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 //use jwtEngine
-app.use(jwtEngine());
+app.use(jwtEngine({
+    onNotValidToken : (signedToken) => {
+        //console.log('not valid token: ' + signedToken);
+    }
+}));
 
 //api with authenticated protection.
 const normalApi = express.Router();
