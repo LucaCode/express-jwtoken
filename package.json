@@ -1,0 +1,35 @@
+{
+  "name": "express-jwtoken",
+  "version": "0.0.1",
+  "description": "Simple express json web token engine.",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "mocha -r ts-node/register test/**/*.ts",
+    "build": "gulp compile",
+    "watch": "gulp watch"
+  },
+  "author": {
+    "name": "Luca Scarignella",
+    "email": "lucacode1@gmail.com",
+    "url": "https://luca.scaringella.de"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LucaCode/express-jwtoken.git"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "dependencies": {
+    "jsonwebtoken": "8.5.1"
+  },
+  "devDependencies": {
+    "gulp": "4.0.1",
+    "gulp-typescript": "5.0.1",
+    "typescript": "3.4.5",
+    "mocha": "6.1.4",
+    "ts-node": "8.1.0"
+  }
+}
