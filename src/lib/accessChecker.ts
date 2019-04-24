@@ -44,8 +44,7 @@ export const reqNotAuthenticated : ExpressMiddlewareFunction = (req, res, next) 
 };
 
 /**
- * Middleware for check the client is authenticated and
- * the token contains a specific key value pair.
+ * Middleware for check the token contains a specific key value pair.
  * @param key
  * @param value
  */
@@ -53,7 +52,7 @@ export const tokenContains : (key : string,value : any) => ExpressMiddlewareFunc
     = (key,value) => {
     return (req, res, next) => {
         if(req.token === null) {
-            block(res);
+           next();
         }
         else {
             if(req.token[key] === value) {

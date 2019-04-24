@@ -25,8 +25,9 @@ normalApi.get('/data',(req,res) => {
     res.status(200).send('Secure Api');
 });
 
-//api with token contains protection.
+//api with authenticated and token contains protection.
 const adminApi = express.Router();
+adminApi.use(reqAuthenticated);
 adminApi.use(tokenContains('isAdmin',true));
 adminApi.get('/data',(req,res) => {
     res.status(200).send('Admin Api');
