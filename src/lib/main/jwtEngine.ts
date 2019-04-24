@@ -123,14 +123,13 @@ export default class JwtEngine {
     verify(req : express.Request, res : express.Response) {
         const signedToken = this._modifierTokenEngine.getToken(req);
         if(signedToken !== null) {
+            req.signedToken = signedToken;
             try {
-                req.signedToken = signedToken;
                 req.token = jwt.verify(signedToken,this._options.publicKey,{
                     algorithms : [this._options.algorithm]
                 });
             }
             catch (e) {
-                req.signedToken = signedToken;
                 req.token = null;
                 this._modifierTokenEngine.removeToken(res);
                 if(typeof this._options.onNotValidToken === 'function'){
