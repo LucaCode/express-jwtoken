@@ -9,6 +9,7 @@ import crypto            = require('crypto');
 const jwt                = require('jsonwebtoken');
 import JwtEngineOptions, {InternalJwtEngineOptions} from "./jwtEngineOptions";
 import JwtToken                    from "./jwtToken";
+// noinspection TypeScriptPreferShortImport
 import {CookieModifierTokenEngine} from "../modifierTokenEngine/cookieModifierTokenEngine";
 import ModifierTokenEngine         from "../modifierTokenEngine/modifierTokenEngine";
 
