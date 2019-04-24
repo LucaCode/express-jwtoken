@@ -1,5 +1,5 @@
 # Express-jwtoken
-*Simple express JSON Web Token engine.*
+*Simple express JSON Web Token library.*
 
 <h1 align="center"> 
   <!-- Coverage -->
