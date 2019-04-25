@@ -16,7 +16,7 @@ export default interface ClientTokenEngine
      * The method can return the signed token as a string, or null if there is no signed token.
      * @param req
      */
-    getToken : (req : Express.Request) => string | null,
+    getToken : (req : Express.Request) => Promise<string | null> | string | null,
 
     /**
      * Function to set the token to the client.
@@ -25,7 +25,7 @@ export default interface ClientTokenEngine
      * @param plainToken
      * @param res
      */
-    setToken : (signToken : string,plainToken : JwtToken,res : Express.Response) => void,
+    setToken : (signToken : string,plainToken : JwtToken,res : Express.Response) => Promise<void> | void,
 
     /**
      * Function to tell the client to remove the token.
@@ -34,6 +34,6 @@ export default interface ClientTokenEngine
      * @param signToken
      * @param res
      */
-    removeToken : (res : Express.Response) => void,
+    removeToken : (res : Express.Response) => Promise<void> | void,
 }
 

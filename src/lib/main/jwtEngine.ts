@@ -32,7 +32,7 @@ declare module 'express-serve-static-core' {
          * This method will tell the client with the response to remove the token
          * and will remove the token and signed token from the request.
          */
-        deauthenticate : () => void
+        deauthenticate : () => Promise<void>
 
         /**
          * This method will authenticate the client by creating a JSON web token
@@ -42,7 +42,7 @@ declare module 'express-serve-static-core' {
          * @param token
          * @return The singed token
          */
-        authenticate : (token ?: Record<string,any>) => string
+        authenticate : (token ?: Record<string,any>) => Promise<string>
     }
 }
 
@@ -83,18 +83,18 @@ export default class JwtEngine {
     static generateEngine(options: JwtEngineOptions = {}): ExpressMiddlewareFunction {
         const jwtEngine = new JwtEngine(options);
 
-        return (req, res, next) => {
+        return async (req, res, next) => {
 
-            jwtEngine.verify(req,res);
+            await jwtEngine.verify(req,res);
 
-            res.deauthenticate = () => {
+            res.deauthenticate = async () => {
                 req.token = null;
                 req.signedToken = null;
-                jwtEngine._clientTokenEngine.removeToken(res);
+                await jwtEngine._clientTokenEngine.removeToken(res);
             };
 
-            res.authenticate = (token = {}) => {
-                return jwtEngine.sign(token,req,res);
+            res.authenticate = async (token = {}) => {
+                return await jwtEngine.sign(token,req,res);
             };
 
             next();
@@ -107,12 +107,17 @@ export default class JwtEngine {
      * @param req
      * @param res
      */
-    sign(token : Record<string,any>, req : express.Request, res : express.Response) : string {
-        const signToken = jwt.sign(token,this._options.privateKey,this._signOptions);
+    async sign(token : Record<string,any>, req : express.Request, res : express.Response) : Promise<string> {
+        const signedToken = await new Promise<string>(((resolve, reject) => {
+            jwt.sign(token,this._options.privateKey,this._signOptions,
+                (err : any, signedToken : string) => {
+                err ? reject(err) : resolve(signedToken);
+            });
+        }));
         req.token = token;
-        req.signedToken = signToken;
-        this._clientTokenEngine.setToken(signToken,token,res);
-        return signToken;
+        req.signedToken = signedToken;
+        await this._clientTokenEngine.setToken(signedToken,token,res);
+        return signedToken;
     }
 
     /**
@@ -120,19 +125,23 @@ export default class JwtEngine {
      * @param req
      * @param res
      */
-    verify(req : express.Request, res : express.Response) {
-        const signedToken = this._clientTokenEngine.getToken(req);
+    async verify(req : express.Request, res : express.Response) {
+        const signedToken = await this._clientTokenEngine.getToken(req);
         if(signedToken !== null) {
             req.signedToken = signedToken;
             try {
-                req.token = jwt.verify(signedToken,this._options.publicKey,{
-                    algorithms : [this._options.algorithm]
-                });
+                req.token = await new Promise(((resolve, reject) => {
+                    jwt.verify(signedToken,this._options.publicKey,{
+                        algorithms : [this._options.algorithm]
+                    },(err : any, token : Record<string,any>) => {
+                        err ? reject(err) : resolve(token);
+                    });
+                }));
             }
             catch (e) {
                 req.token = null;
-                this._clientTokenEngine.removeToken(res);
-                this._options.onNotValidToken(signedToken,req,res);
+                await this._clientTokenEngine.removeToken(res);
+                await this._options.onNotValidToken(signedToken,req,res);
             }
         }
         else {

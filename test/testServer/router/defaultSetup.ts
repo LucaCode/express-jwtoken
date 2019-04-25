@@ -38,14 +38,14 @@ defaultSetup.use('/admin',adminApi);
 defaultSetup.use('/guest',guestApi);
 
 //authenticate
-defaultSetup.post('/login',(req, res) => {
-    res.authenticate({isAdmin : req.body.admin});
+defaultSetup.post('/login',async (req, res) => {
+    await res.authenticate({isAdmin : req.body.admin});
     res.status(200).send();
 });
 
 //deauthenticate
-defaultSetup.post('/logout',(req, res) => {
-    res.deauthenticate();
+defaultSetup.post('/logout',async (req, res) => {
+    await res.deauthenticate();
     res.status(200).send();
 });
 

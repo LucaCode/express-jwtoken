@@ -41,7 +41,7 @@ export default interface JwtEngineOptions {
      * @param req
      * @param res
      */
-    onNotValidToken ?: (signedToken : string,req : Express.Request,res : Express.Response) => void;
+    onNotValidToken ?: (signedToken : string,req : Express.Request,res : Express.Response) => void | Promise<void>;
 
     /**
      * Token expressed in seconds (number) or a string describing a time.

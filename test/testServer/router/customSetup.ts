@@ -34,9 +34,9 @@ normalApi.get('/data',(req,res) => {
 });
 
 //authenticate
-customSetup.post('/login',(req, res) => {
+customSetup.post('/login',async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ token : res.authenticate()}));
+    res.end(JSON.stringify({ token : (await res.authenticate())}));
 });
 
 customSetup.use('/api',normalApi);

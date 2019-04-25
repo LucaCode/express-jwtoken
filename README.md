@@ -71,10 +71,10 @@ These new properties will be added to the request object:
 
 ### The Response object
 These new properties will be added to the response object:
-* `deauthenticate` (`Function (() => void)`) - This method can be used to deauthenticate the client. 
+* `deauthenticate` (`Function (() => Promise<void>)`) - This method can be used to deauthenticate the client. 
 It will tell the client to remove the token and set the token and signed token property of the request to null.
 
-* `authenticate` (`Function ((token ?: Record<string,any>) => string)`) - This method will authenticate the client by creating a JSON Web Token and attach it to the client and the request.
+* `authenticate` (`Function ((token ?: Record<string,any>) => Promise<string>)`) - This method will authenticate the client by creating a JSON Web Token and attach it to the client and the request.
 You also can use this method to refresh a token, but notice that the token payload will not be merged with the old token payload. Also, it will return the new singed token.
 
 ### Options
@@ -112,7 +112,7 @@ This object can specify the following options:
 * `algorithm` (`string`) -  Algorithm for encrypting and decrypt the token.
                             Default value is the HS256 Algorithm.     
                             
-* `onNotValidToken` (`Function ((signedToken : string,req : Request,res : Response) => void)`) - 
+* `onNotValidToken` (`Function ((signedToken : string,req : Request,res : Response) => void | Promise<void>)`) - 
 Event function that gets invoked when a client signed token is not valid.  
 
 ### ClientTokenEngine (CTE)
@@ -129,14 +129,14 @@ You can use one of these, modifier them or create your own engine by creating an
 
 >Notice that the module also exports a typescript interface for this.
 
-* `getToken` (`Function ((req : Request) => string | null)`) - Function to get the signed token from the client by using the request object.
+* `getToken` (`Function ((req : Request) => Promise<string | null> | string | null)`) - Function to get the signed token from the client by using the request object.
                                 The method can return the signed token as a string, or null if there is no signed token.
                                 
-* `setToken` (`Function ((signToken : string,plainToken : JwtToken,res : Response) => void)`) - 
+* `setToken` (`Function ((signToken : string,plainToken : JwtToken,res : Response) => Promise<void> | void)`) - 
 Function to set the token to the client.
 Will be used by the authenticate method on the response object.
 
-* `removeToken` (`Function ((res : Response) => void)`) - Function to tell the client to remove the token. 
+* `removeToken` (`Function ((res : Response) => Promise<void> | void)`) - Function to tell the client to remove the token. 
 Will be used in the case that the provided token is not valid or by calling the deauthenticate method on the response object.
 
 ### Check Access  
