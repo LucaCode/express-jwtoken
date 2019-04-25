@@ -41,7 +41,7 @@ $ npm install --save express-jwtoken
 First, you have to set the jwtEngine middleware. 
 This middleware will add functionality to the express response and request object. 
 Also, it will try to get and verify the token from the request and attach the plain 
-(encrypted token) to the request object. If there is no token or the token is not 
+(decrypted token) to the request object. If there is no token or the token is not 
 valid the assigned value will be null. You also can provide extra options as a parameter.
 
 >Notice that the engine with the default options will use cookies to set, get or remove the signed token from a client. 
