@@ -54,15 +54,21 @@ interface SignOptions {
     notBefore ?: number | string
 }
 
+interface VerifyOptions {
+    algorithms : string[],
+}
+
 export default class JwtEngine {
 
     private readonly _options : InternalJwtEngineOptions;
     private readonly _signOptions : SignOptions;
+    private readonly _verifyOptions : VerifyOptions;
     private readonly _clientTokenEngine : ClientTokenEngine;
 
     constructor(options: JwtEngineOptions){
         this._options = JwtEngine.processOptions(options);
 
+        //sign options
         this._signOptions = {
             algorithm : this._options.algorithm,
             expiresIn : this._options.expiresIn
@@ -70,6 +76,11 @@ export default class JwtEngine {
         if(this._options.notBefore){
             this._signOptions.notBefore = this._options.notBefore;
         }
+
+        //verify options
+        this._verifyOptions = {
+            algorithms : [this._options.algorithm]
+        };
 
         this._clientTokenEngine = this._options.clientTokenEngine;
     }
@@ -131,9 +142,8 @@ export default class JwtEngine {
             req.signedToken = signedToken;
             try {
                 req.token = await new Promise(((resolve, reject) => {
-                    jwt.verify(signedToken,this._options.publicKey,{
-                        algorithms : [this._options.algorithm]
-                    },(err : any, token : Record<string,any>) => {
+                    jwt.verify(signedToken,this._options.publicKey,this._verifyOptions,
+                        (err : any, token : Record<string,any>) => {
                         err ? reject(err) : resolve(token);
                     });
                 }));
