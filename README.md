@@ -1,4 +1,4 @@
-# Express-jwtoken
+# Express-jwtoken 💳🔐
 *Simple express JSON Web Token library.*
 
 <h1 align="center"> 
