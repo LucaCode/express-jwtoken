@@ -7,8 +7,8 @@ GitHub: LucaCode
 import express     = require('express');
 import bodyParser  = require('body-parser');
 const cookieParser = require('cookie-parser');
-import defaultSetup      from "./router/defaultSetup";
-import customSetup      from "./router/customSetup";
+import defaultSetup  from "./setups/defaultSetup";
+import customSetup   from "./setups/customSetup";
 
 const app = express();
 
