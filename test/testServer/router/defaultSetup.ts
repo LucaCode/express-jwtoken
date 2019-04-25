@@ -5,22 +5,12 @@ GitHub: LucaCode
  */
 
 import express   = require('express');
-import bodyParser= require('body-parser');
-import {jwtEngine, reqAuthenticated, reqAuthenticatedAndContains, reqNotAuthenticated} from "../src";
-const cookieParser = require('cookie-parser');
+import {jwtEngine, reqAuthenticated, reqAuthenticatedAndContains, reqNotAuthenticated} from "../../../src";
 
-const app = express();
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser());
+const defaultSetup = express.Router();
 
 //use jwtEngine
-app.use(jwtEngine({
-    onNotValidToken : (signedToken) => {
-        //console.log('not valid token: ' + signedToken);
-    }
-}));
+defaultSetup.use(jwtEngine());
 
 //api with authenticated protection.
 const normalApi = express.Router();
@@ -43,20 +33,20 @@ guestApi.get('/data',(req,res) => {
     res.status(200).send('Guest Api');
 });
 
-app.use('/api',normalApi);
-app.use('/admin',adminApi);
-app.use('/guest',guestApi);
+defaultSetup.use('/api',normalApi);
+defaultSetup.use('/admin',adminApi);
+defaultSetup.use('/guest',guestApi);
 
 //authenticate
-app.post('/login',(req,res) => {
+defaultSetup.post('/login',(req, res) => {
     res.authenticate({isAdmin : req.body.admin});
     res.status(200).send();
 });
 
 //deauthenticate
-app.post('/logout',(req,res) => {
+defaultSetup.post('/logout',(req, res) => {
     res.deauthenticate();
     res.status(200).send();
 });
 
-export default app;
+export default defaultSetup;

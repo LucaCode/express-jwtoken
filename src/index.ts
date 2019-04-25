@@ -8,7 +8,8 @@ import JwtEngine                   from "./lib/main/jwtEngine";
 import {reqAuthenticated,reqNotAuthenticated,reqAuthenticatedAndContains} from "./lib/main/accessChecker";
 import JwtEngineOptions            from "./lib/main/jwtEngineOptions";
 import ModifierTokenEngine         from "./lib/modifierTokenEngine/modifierTokenEngine";
-import {CookieModifierTokenEngine} from "./lib/modifierTokenEngine/cookieModifierTokenEngine";
+import {CookieMTE} from "./lib/modifierTokenEngine/cookieMTE";
+import {AuthorizationHeadersMTE}   from "./lib/modifierTokenEngine/authorizationHeadersMTE";
 
 const jwtEngine = JwtEngine.generateEngine;
 
@@ -18,7 +19,8 @@ export {
     reqNotAuthenticated,
     reqAuthenticatedAndContains,
     ModifierTokenEngine,
-    CookieModifierTokenEngine,
+    CookieMTE,
+    AuthorizationHeadersMTE,
     JwtEngineOptions
 };
 

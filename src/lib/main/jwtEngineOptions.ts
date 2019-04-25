@@ -4,7 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import JwtToken from "./jwtToken";
 import ModifierTokenEngine from "../modifierTokenEngine/modifierTokenEngine";
 
 export default interface JwtEngineOptions {
@@ -76,5 +75,6 @@ export interface InternalJwtEngineOptions extends JwtEngineOptions {
     publicKey : string,
     algorithm :  string,
     expiresIn : string | number,
-    modifierTokenEngine : ModifierTokenEngine
+    modifierTokenEngine : ModifierTokenEngine,
+    onNotValidToken : (signedToken : string,req : Express.Request,res : Express.Response) => void
 }

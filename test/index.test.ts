@@ -6,111 +6,149 @@ GitHub: LucaCode
 
 import chai     = require('chai');
 import chaiHttp = require('chai-http');
-import app        from "./expressServer";
+import app        from "./testServer/expressServer";
 
 chai.use(chaiHttp);
 
 describe('JwtEngine tests', () => {
 
-    describe('Normal Api', () => {
-        it('Should block access to API path without a token.', async () => {
-            const res = await chai.request(app)
-                .get('/api/data')
-                .send();
-            chai.expect(res).to.have.status(403);
+    describe('Default MTE',async  () => {
+        describe('Normal Api', () => {
+            it('Should block access to API path without a token.', async () => {
+                const res = await chai.request(app)
+                    .get('/1/api/data')
+                    .send();
+                chai.expect(res).to.have.status(403);
+            });
+
+            it('Should deny access with a not valid token.', async () => {
+                const res = await chai.request(app)
+                    .get('/1/api/data')
+                    .set('Cookie', 'jwtToken=123433;')
+                    .send();
+                chai.expect(res).to.have.status(403);
+            });
+
+            it('Should allow access to secure API after authenticating.', async () => {
+                const agent =  chai.request.agent(app);
+
+                const loginRes = await agent.post('/1/login')
+                    .send();
+                chai.expect(loginRes).to.have.cookie('jwtToken');
+
+                const res = await agent.get('/1/api/data')
+                    .send();
+
+                chai.expect(res).to.have.status(200);
+            });
+
+            it('Should deny access to secure API after authenticating and deauthenticating.', async () => {
+                const agent =  chai.request.agent(app);
+
+                const loginRes = await agent.post('/1/login')
+                    .send();
+                chai.expect(loginRes).to.have.cookie('jwtToken');
+
+                const logoutRes = await agent.post('/1/logout')
+                    .send();
+                chai.expect(logoutRes).to.not.have.cookie('jwtToken');
+
+                const res = await agent.get('/1/api/data')
+                    .send();
+
+                chai.expect(res).to.have.status(403);
+            });
         });
 
-        it('Should deny access with a not valid token.', async () => {
-            const res = await chai.request(app)
-                .get('/api/data')
-                .set('Cookie', 'jwtToken=123433;')
-                .send();
-            chai.expect(res).to.have.status(403);
+        describe('Admin Api', () => {
+            it('Should block access to admin path without a token.', async () => {
+                const res = await chai.request(app)
+                    .get('/1/admin/data')
+                    .send();
+                chai.expect(res).to.have.status(403);
+            });
+
+            it('Should allow access to admin path after authenticating with admin rights.', async () => {
+                const agent =  chai.request.agent(app);
+
+                const loginRes = await agent.post('/1/login')
+                    .send({admin : true});
+                chai.expect(loginRes).to.have.cookie('jwtToken');
+
+                const res = await agent.get('/1/admin/data')
+                    .send();
+                chai.expect(res).to.have.status(200);
+            });
+
+            it('Should deny access to admin path after authenticating without admin rights.', async () => {
+                const agent =  chai.request.agent(app);
+
+                const loginRes = await agent.post('/1/login')
+                    .send();
+                chai.expect(loginRes).to.have.cookie('jwtToken');
+
+                const res = await agent.get('/1/admin/data')
+                    .send();
+                chai.expect(res).to.have.status(403);
+            });
+
         });
 
-        it('Should allow access to secure API after authenticating.', async () => {
-            const agent =  chai.request.agent(app);
+        describe('Guest Api', () => {
+            it('Should allow access to guest path without a token.', async () => {
+                const res = await chai.request(app)
+                    .get('/1/guest/data')
+                    .send();
+                chai.expect(res).to.have.status(200);
+            });
 
-            const loginRes = await agent.post('/login')
-                .send();
-            chai.expect(loginRes).to.have.cookie('jwtToken');
+            it('Should deny access to guest path after authenticating.', async () => {
+                const agent =  chai.request.agent(app);
 
-            const res = await agent.get('/api/data')
-                .send();
+                const loginRes = await agent.post('/1/login')
+                    .send();
+                chai.expect(loginRes).to.have.cookie('jwtToken');
 
-            chai.expect(res).to.have.status(200);
-        });
-
-        it('Should deny access to secure API after authenticating and deauthenticating.', async () => {
-            const agent =  chai.request.agent(app);
-
-            const loginRes = await agent.post('/login')
-                .send();
-            chai.expect(loginRes).to.have.cookie('jwtToken');
-
-            const logoutRes = await agent.post('/logout')
-                .send();
-            chai.expect(logoutRes).to.not.have.cookie('jwtToken');
-
-            const res = await agent.get('/api/data')
-                .send();
-
-            chai.expect(res).to.have.status(403);
+                const res = await agent.get('/1/guest/data')
+                    .send();
+                chai.expect(res).to.have.status(403);
+            });
         });
     });
 
-    describe('Admin Api', () => {
-        it('Should block access to admin path without a token.', async () => {
-            const res = await chai.request(app)
-                .get('/admin/data')
-                .send();
-            chai.expect(res).to.have.status(403);
-        });
+    describe('AuthorizationHeadersMTE', () => {
 
-        it('Should allow access to admin path after authenticating with admin rights.', async () => {
-            const agent =  chai.request.agent(app);
+        describe('Normal Api', () => {
+            it('Should block access to API path without a token.', async () => {
+                const res = await chai.request(app)
+                    .get('/2/api/data')
+                    .send();
+                chai.expect(res).to.have.status(403);
+            });
 
-            const loginRes = await agent.post('/login')
-                .send({admin : true});
-            chai.expect(loginRes).to.have.cookie('jwtToken');
+            it('Should deny access with a not valid token.', async () => {
+                const res = await chai.request(app)
+                    .get('/2/api/data')
+                    .set('Authorization', 'Bearer 32942380')
+                    .send();
+                chai.expect(res).to.have.status(403);
+            });
 
-            const res = await agent.get('/admin/data')
-                .send();
-            chai.expect(res).to.have.status(200);
-        });
+            it('Should allow access to secure API after authenticating.', async () => {
+                const agent =  chai.request.agent(app);
 
-        it('Should deny access to admin path after authenticating without admin rights.', async () => {
-            const agent =  chai.request.agent(app);
+                const loginRes = await agent.post('/2/login')
+                    .send();
 
-            const loginRes = await agent.post('/login')
-                .send();
-            chai.expect(loginRes).to.have.cookie('jwtToken');
+                chai.assert.typeOf(loginRes.body,'object');
+                chai.assert.typeOf(loginRes.body.token,'string');
 
-            const res = await agent.get('/admin/data')
-                .send();
-            chai.expect(res).to.have.status(403);
-        });
+                const res = await agent.get('/2/api/data')
+                    .set('Authorization', 'Bearer '+loginRes.body.token)
+                    .send();
 
-    });
-
-    describe('Guest Api', () => {
-        it('Should allow access to guest path without a token.', async () => {
-            const res = await chai.request(app)
-                .get('/guest/data')
-                .send();
-            chai.expect(res).to.have.status(200);
-        });
-
-        it('Should deny access to guest path after authenticating.', async () => {
-            const agent =  chai.request.agent(app);
-
-            const loginRes = await agent.post('/login')
-                .send();
-            chai.expect(loginRes).to.have.cookie('jwtToken');
-
-            const res = await agent.get('/guest/data')
-                .send();
-            chai.expect(res).to.have.status(403);
+                chai.expect(res).to.have.status(200);
+            });
         });
     });
 

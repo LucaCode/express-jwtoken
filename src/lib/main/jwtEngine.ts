@@ -10,7 +10,7 @@ const jwt                = require('jsonwebtoken');
 import JwtEngineOptions, {InternalJwtEngineOptions} from "./jwtEngineOptions";
 import JwtToken                    from "./jwtToken";
 // noinspection TypeScriptPreferShortImport
-import {CookieModifierTokenEngine} from "../modifierTokenEngine/cookieModifierTokenEngine";
+import {CookieMTE}                 from "../modifierTokenEngine/cookieMTE";
 import ModifierTokenEngine         from "../modifierTokenEngine/modifierTokenEngine";
 
 declare module 'express-serve-static-core' {
@@ -132,9 +132,7 @@ export default class JwtEngine {
             catch (e) {
                 req.token = null;
                 this._modifierTokenEngine.removeToken(res);
-                if(typeof this._options.onNotValidToken === 'function'){
-                    this._options.onNotValidToken(signedToken,req,res);
-                }
+                this._options.onNotValidToken(signedToken,req,res);
             }
         }
         else {
@@ -164,8 +162,8 @@ export default class JwtEngine {
             algorithm : options.algorithm || 'HS256',
             expiresIn : options.expiresIn || '1 day',
             notBefore : options.notBefore,
-            modifierTokenEngine : options.modifierTokenEngine || CookieModifierTokenEngine,
-            onNotValidToken : options.onNotValidToken
+            modifierTokenEngine : options.modifierTokenEngine || CookieMTE,
+            onNotValidToken : options.onNotValidToken || (() => {})
         };
     }
 }

@@ -4,7 +4,7 @@
 <h1 align="center"> 
   <!-- Coverage -->
   <a href="https://npmjs.org/package/express-jwtoken">
-    <img src="https://img.shields.io/badge/Coverage-98.18%25-brightgreen.svg" alt="Downloads"/>
+    <img src="https://img.shields.io/badge/Coverage-100%25-brightgreen.svg" alt="Downloads"/>
   </a> 
   <!-- Stability -->
   <a href="https://nodejs.org/api/documentation.html#documentation_stability_index">
@@ -81,8 +81,8 @@ You also can use this method to refresh a token, but notice that the token paylo
 The jwtEngine function can take optional a jwtEngineOptions object as a parameter. 
 This object can specify the following options:
 
-* `modifierTokenEngine` (`ModifierTokenEngine`) - Engine component to modifier the token that means set, get or remove the token from the client.
-                                                  Default is the CookieModifierTokenEngine which requires the **cookie-parser** before using the JwtEngine. 
+* `modifierTokenEngine` (`ModifierTokenEngine`) - The ModifierTokenEngine (MTE) is the engine component to modifier the token that means set, get or remove the token from the client.
+                                                  Default is the CookieMTE which requires the **cookie-parser** before using the JwtEngine. 
                                                   This engine will use cookies to set, get or remove the signed token from the client.
 
 * `secretKey` (`string`) - The secret key for encrypting and decrypt the token.
@@ -115,9 +115,17 @@ This object can specify the following options:
 * `onNotValidToken` (`Function ((signedToken : string,req : Request,res : Response) => void)`) - 
 Event function that gets invoked when a client signed token is not valid.  
 
-### Own ModifierTokenEngine
-The ModifierTokenEngine will be used to set, get or remove the token from the client. 
-You can create your engine by creating an object with these following properties:
+### ModifierTokenEngine (MTE)
+The ModifierTokenEngine (MTE) will be used to set, get or remove the token from the client.
+This library has two predefined MTE's:
+
+* `CookieMTE` - This is the default MTE which requires the **cookie-parser** before using the JwtEngine. 
+This engine will use cookies to set, get or remove the signed token from the client.
+                                
+* `AuthorizationHeadersMTE` - This engine will use the HTTP authorization headers to get the token. 
+The set or remove of the singed token must be handled by yourself.
+
+You can use one of these, modifier them or create your own engine by creating an object with these following properties:
 
 >Notice that the module also exports a typescript interface for this.
 
@@ -128,7 +136,7 @@ You can create your engine by creating an object with these following properties
 Will be used by the authenticate method on the response object.
 
 * `removeToken` (`Function ((res : Response) => void)`) - Function to tell the client to remove the token. 
-Will be used in the case that the provided token is not valid or by calling the deauthenticate method on the response object.   
+Will be used in the case that the provided token is not valid or by calling the deauthenticate method on the response object.
 
 ### Check Access  
 
