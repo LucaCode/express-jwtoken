@@ -44,7 +44,7 @@ Also, it will try to get and verify the token from the request and attach the pl
 (decrypted token) to the request object. If there is no token or the token is not 
 valid the assigned value will be null. You also can provide extra options as a parameter.
 
->Notice that the engine with the default options will use cookies to set, get or remove the signed token from a client. 
+>Notice that the engine with the default options will use a cookie to set, get or remove the signed token from a client.
 So make sure that you use the **cookie-parser** before using the JwtEngine if you don't provide custom options.
 
 ```typescript
