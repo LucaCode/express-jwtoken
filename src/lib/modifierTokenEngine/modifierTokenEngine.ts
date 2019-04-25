@@ -20,6 +20,7 @@ export default interface ModifierTokenEngine
 
     /**
      * Function to set the signed token to the response.
+     * Will be used by the authenticate method on the response object.
      * @param signToken
      * @param plainToken
      * @param res
@@ -28,6 +29,8 @@ export default interface ModifierTokenEngine
 
     /**
      * Function to tell the client to remove the token.
+     * Will be used in the case that the provided token is not valid or
+     * by calling the deauthenticate method on the response object.
      * @param signToken
      * @param res
      */

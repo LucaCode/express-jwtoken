@@ -124,9 +124,11 @@ You can create your engine by creating an object with these following properties
 * `getToken` (`Function ((req : Request) => string | null)`) - Function for get the signed token from the request.
                                 The method can return the signed token as a string, or null if there is no signed token.
                                 
-* `setToken` (`Function ((signToken : string,plainToken : JwtToken,res : Response) => void)`) - Function to set the token to the response.  
+* `setToken` (`Function ((signToken : string,plainToken : JwtToken,res : Response) => void)`) - Function to set the token to the response. 
+Will be used by the authenticate method on the response object.
 
-* `removeToken` (`Function ((res : Response) => void)`) - Function to tell the client to remove the token.   
+* `removeToken` (`Function ((res : Response) => void)`) - Function to tell the client to remove the token. 
+Will be used in the case that the provided token is not valid or by calling the deauthenticate method on the response object.   
 
 ### Check Access  
 
