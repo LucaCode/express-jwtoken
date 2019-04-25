@@ -82,7 +82,7 @@ The jwtEngine function can take optional a jwtEngineOptions object as a paramete
 This object can specify the following options:
 
 * `clientTokenEngine` (`ClientTokenEngine`) - The ClientTokenEngine (CTE) is the engine component to modifier the token on the client that means set get or remove the token from the client.
-                                                  Default is the CookieCTE which requires the **cookie-parser** before using the JwtEngine. 
+                                                  Default is the CookieCTE (with cookie name 'jwt') which requires the **cookie-parser** before using the JwtEngine. 
                                                   This engine will use cookies to set, get or remove the signed token from the client.
 
 * `secretKey` (`string`) - The secret key for encrypting and decrypt the token.
@@ -121,6 +121,11 @@ This library has two predefined CTE's:
 
 * `CookieCTE` - This is the default CTE which requires the **cookie-parser** before using the JwtEngine. 
 This engine will use cookies to set, get or remove the signed token from the client.
+
+> Notice that the CookieCTE is not directly a ClientTokenEngine. 
+Instead, it is a function that returns a CTE. 
+That gives you the possibility to change the name of the cookie variable. 
+If you don't provide a cookie name, the cookie name 'jwt' will be used.
                                 
 * `AuthorizationHeadersCTE` - This engine will use the HTTP authorization headers to get the token from the client. 
 The set or remove of the singed token must be handled by yourself.

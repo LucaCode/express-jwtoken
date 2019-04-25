@@ -24,7 +24,7 @@ describe('JwtEngine tests', () => {
             it('Should deny access with a not valid token.', async () => {
                 const res = await chai.request(app)
                     .get('/1/api/data')
-                    .set('Cookie', 'jwtToken=123433;')
+                    .set('Cookie', 'jwt=123433;')
                     .send();
                 chai.expect(res).to.have.status(403);
             });
@@ -34,7 +34,7 @@ describe('JwtEngine tests', () => {
 
                 const loginRes = await agent.post('/1/login')
                     .send();
-                chai.expect(loginRes).to.have.cookie('jwtToken');
+                chai.expect(loginRes).to.have.cookie('jwt');
 
                 const res = await agent.get('/1/api/data')
                     .send();
@@ -47,11 +47,11 @@ describe('JwtEngine tests', () => {
 
                 const loginRes = await agent.post('/1/login')
                     .send();
-                chai.expect(loginRes).to.have.cookie('jwtToken');
+                chai.expect(loginRes).to.have.cookie('jwt');
 
                 const logoutRes = await agent.post('/1/logout')
                     .send();
-                chai.expect(logoutRes).to.not.have.cookie('jwtToken');
+                chai.expect(logoutRes).to.not.have.cookie('jwt');
 
                 const res = await agent.get('/1/api/data')
                     .send();
@@ -73,7 +73,7 @@ describe('JwtEngine tests', () => {
 
                 const loginRes = await agent.post('/1/login')
                     .send({admin : true});
-                chai.expect(loginRes).to.have.cookie('jwtToken');
+                chai.expect(loginRes).to.have.cookie('jwt');
 
                 const res = await agent.get('/1/admin/data')
                     .send();
@@ -85,7 +85,7 @@ describe('JwtEngine tests', () => {
 
                 const loginRes = await agent.post('/1/login')
                     .send();
-                chai.expect(loginRes).to.have.cookie('jwtToken');
+                chai.expect(loginRes).to.have.cookie('jwt');
 
                 const res = await agent.get('/1/admin/data')
                     .send();
@@ -107,7 +107,7 @@ describe('JwtEngine tests', () => {
 
                 const loginRes = await agent.post('/1/login')
                     .send();
-                chai.expect(loginRes).to.have.cookie('jwtToken');
+                chai.expect(loginRes).to.have.cookie('jwt');
 
                 const res = await agent.get('/1/guest/data')
                     .send();

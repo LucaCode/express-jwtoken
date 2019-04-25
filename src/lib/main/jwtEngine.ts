@@ -181,7 +181,7 @@ export default class JwtEngine {
             algorithm : options.algorithm || 'HS256',
             expiresIn : options.expiresIn || '1 day',
             notBefore : options.notBefore,
-            clientTokenEngine : options.clientTokenEngine || CookieCTE,
+            clientTokenEngine : options.clientTokenEngine || CookieCTE(),
             onNotValidToken : options.onNotValidToken || (() => {})
         };
     }
