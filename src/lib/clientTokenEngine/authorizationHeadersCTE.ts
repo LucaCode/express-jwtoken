@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ModifierTokenEngine from "./modifierTokenEngine";
+import ClientTokenEngine from "./clientTokenEngine";
 
 /**
- * Engine component to get the token by using HTTP authorization headers.
+ * Engine component to get the token from the client by using HTTP authorization headers.
  */
-export const AuthorizationHeadersMTE : ModifierTokenEngine =
+export const AuthorizationHeadersCTE : ClientTokenEngine =
     {
         /**
          * The function will try to get the token from the HTTP authorization headers.

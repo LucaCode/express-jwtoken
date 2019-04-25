@@ -4,13 +4,13 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ModifierTokenEngine from "./modifierTokenEngine";
+import ClientTokenEngine from "./clientTokenEngine";
 
 /**
- * Engine component to modifier the token by using cookies.
+ * Engine component to modifier the token on the client by using cookies.
  * This engine requires the cookie-parser before using the JwtEngine.
  */
-export const CookieMTE : ModifierTokenEngine =
+export const CookieCTE : ClientTokenEngine =
 {
     /**
      * Function will try to get the token from a cookie (cookies.jwtToken).

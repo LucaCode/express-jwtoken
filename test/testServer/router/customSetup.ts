@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import express   = require('express');
 import {
-    AuthorizationHeadersMTE,
+    AuthorizationHeadersCTE,
     jwtEngine,
     reqAuthenticated
 } from "../../../src";
@@ -15,7 +15,7 @@ const customSetup = express.Router();
 
 //use jwtEngine
 customSetup.use(jwtEngine({
-    modifierTokenEngine : AuthorizationHeadersMTE,
+    clientTokenEngine : AuthorizationHeadersCTE,
 
     onNotValidToken : (signedToken) => {
         //console.log('not valid token: ' + signedToken);

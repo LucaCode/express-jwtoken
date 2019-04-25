@@ -7,19 +7,19 @@ GitHub: LucaCode
 import JwtToken from "./../main/jwtToken";
 
 /**
- * Engine component to modifier the token that means set, get or remove the token from the client.
+ * Engine component to set, get or remove the token from the client.
  */
-export default interface ModifierTokenEngine
+export default interface ClientTokenEngine
 {
     /**
-     * Function for get the signed token from the request.
+     * Function to get the signed token from the client by using the request object.
      * The method can return the signed token as a string, or null if there is no signed token.
      * @param req
      */
     getToken : (req : Express.Request) => string | null,
 
     /**
-     * Function to set the signed token to the response.
+     * Function to set the token to the client.
      * Will be used by the authenticate method on the response object.
      * @param signToken
      * @param plainToken

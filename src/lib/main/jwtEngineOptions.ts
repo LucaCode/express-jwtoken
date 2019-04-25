@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ModifierTokenEngine from "../modifierTokenEngine/modifierTokenEngine";
+import ClientTokenEngine from "../clientTokenEngine/clientTokenEngine";
 
 export default interface JwtEngineOptions {
 
@@ -30,10 +30,10 @@ export default interface JwtEngineOptions {
     publicKey ?: string,
 
     /**
-     * Engine component to modifier the token that means set, get or remove the token from the client.
-     * @default is the CookieModifierTokenEngine which requires the cookie-parser before using the JwtEngine.
+     * Engine component to modifier the token on the client that means set get or remove the token from the client.
+     * @default is the CookieCTE which requires the cookie-parser before using the JwtEngine.
      */
-    modifierTokenEngine ?: ModifierTokenEngine,
+    clientTokenEngine ?: ClientTokenEngine,
 
     /**
      * Event function that gets invoked when a client signed token is not valid.
@@ -75,6 +75,6 @@ export interface InternalJwtEngineOptions extends JwtEngineOptions {
     publicKey : string,
     algorithm :  string,
     expiresIn : string | number,
-    modifierTokenEngine : ModifierTokenEngine,
+    clientTokenEngine : ClientTokenEngine,
     onNotValidToken : (signedToken : string,req : Express.Request,res : Express.Response) => void
 }

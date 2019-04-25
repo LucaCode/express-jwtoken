@@ -7,9 +7,9 @@ GitHub: LucaCode
 import JwtEngine                   from "./lib/main/jwtEngine";
 import {reqAuthenticated,reqNotAuthenticated,reqAuthenticatedAndContains} from "./lib/main/accessChecker";
 import JwtEngineOptions            from "./lib/main/jwtEngineOptions";
-import ModifierTokenEngine         from "./lib/modifierTokenEngine/modifierTokenEngine";
-import {CookieMTE} from "./lib/modifierTokenEngine/cookieMTE";
-import {AuthorizationHeadersMTE}   from "./lib/modifierTokenEngine/authorizationHeadersMTE";
+import ClientTokenEngine           from "./lib/clientTokenEngine/clientTokenEngine";
+import {CookieCTE} from "./lib/clientTokenEngine/cookieCTE";
+import {AuthorizationHeadersCTE}   from "./lib/clientTokenEngine/authorizationHeadersCTE";
 
 const jwtEngine = JwtEngine.generateEngine;
 
@@ -18,9 +18,9 @@ export {
     reqAuthenticated,
     reqNotAuthenticated,
     reqAuthenticatedAndContains,
-    ModifierTokenEngine,
-    CookieMTE,
-    AuthorizationHeadersMTE,
+    ClientTokenEngine,
+    CookieCTE,
+    AuthorizationHeadersCTE,
     JwtEngineOptions
 };
 

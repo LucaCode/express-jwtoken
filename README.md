@@ -81,8 +81,8 @@ You also can use this method to refresh a token, but notice that the token paylo
 The jwtEngine function can take optional a jwtEngineOptions object as a parameter. 
 This object can specify the following options:
 
-* `modifierTokenEngine` (`ModifierTokenEngine`) - The ModifierTokenEngine (MTE) is the engine component to modifier the token that means set, get or remove the token from the client.
-                                                  Default is the CookieMTE which requires the **cookie-parser** before using the JwtEngine. 
+* `clientTokenEngine` (`ClientTokenEngine`) - The ClientTokenEngine (CTE) is the engine component to modifier the token on the client that means set get or remove the token from the client.
+                                                  Default is the CookieCTE which requires the **cookie-parser** before using the JwtEngine. 
                                                   This engine will use cookies to set, get or remove the signed token from the client.
 
 * `secretKey` (`string`) - The secret key for encrypting and decrypt the token.
@@ -115,24 +115,25 @@ This object can specify the following options:
 * `onNotValidToken` (`Function ((signedToken : string,req : Request,res : Response) => void)`) - 
 Event function that gets invoked when a client signed token is not valid.  
 
-### ModifierTokenEngine (MTE)
-The ModifierTokenEngine (MTE) will be used to set, get or remove the token from the client.
-This library has two predefined MTE's:
+### ClientTokenEngine (CTE)
+The ClientTokenEngine (CTE) will be used to set get or remove the token from the client.
+This library has two predefined CTE's:
 
-* `CookieMTE` - This is the default MTE which requires the **cookie-parser** before using the JwtEngine. 
+* `CookieCTE` - This is the default CTE which requires the **cookie-parser** before using the JwtEngine. 
 This engine will use cookies to set, get or remove the signed token from the client.
                                 
-* `AuthorizationHeadersMTE` - This engine will use the HTTP authorization headers to get the token. 
+* `AuthorizationHeadersCTE` - This engine will use the HTTP authorization headers to get the token from the client. 
 The set or remove of the singed token must be handled by yourself.
 
 You can use one of these, modifier them or create your own engine by creating an object with these following properties:
 
 >Notice that the module also exports a typescript interface for this.
 
-* `getToken` (`Function ((req : Request) => string | null)`) - Function for get the signed token from the request.
+* `getToken` (`Function ((req : Request) => string | null)`) - Function to get the signed token from the client by using the request object.
                                 The method can return the signed token as a string, or null if there is no signed token.
                                 
-* `setToken` (`Function ((signToken : string,plainToken : JwtToken,res : Response) => void)`) - Function to set the token to the response. 
+* `setToken` (`Function ((signToken : string,plainToken : JwtToken,res : Response) => void)`) - 
+Function to set the token to the client.
 Will be used by the authenticate method on the response object.
 
 * `removeToken` (`Function ((res : Response) => void)`) - Function to tell the client to remove the token. 

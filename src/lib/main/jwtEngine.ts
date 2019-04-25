@@ -10,8 +10,8 @@ const jwt                = require('jsonwebtoken');
 import JwtEngineOptions, {InternalJwtEngineOptions} from "./jwtEngineOptions";
 import JwtToken                    from "./jwtToken";
 // noinspection TypeScriptPreferShortImport
-import {CookieMTE}                 from "../modifierTokenEngine/cookieMTE";
-import ModifierTokenEngine         from "../modifierTokenEngine/modifierTokenEngine";
+import {CookieCTE}                 from "../clientTokenEngine/cookieCTE";
+import ClientTokenEngine           from "../clientTokenEngine/clientTokenEngine";
 
 declare module 'express-serve-static-core' {
     interface Request {
@@ -58,7 +58,7 @@ export default class JwtEngine {
 
     private readonly _options : InternalJwtEngineOptions;
     private readonly _signOptions : SignOptions;
-    private readonly _modifierTokenEngine : ModifierTokenEngine;
+    private readonly _clientTokenEngine : ClientTokenEngine;
 
     constructor(options: JwtEngineOptions){
         this._options = JwtEngine.processOptions(options);
@@ -71,7 +71,7 @@ export default class JwtEngine {
             this._signOptions.notBefore = this._options.notBefore;
         }
 
-        this._modifierTokenEngine = this._options.modifierTokenEngine;
+        this._clientTokenEngine = this._options.clientTokenEngine;
     }
 
     /**
@@ -90,7 +90,7 @@ export default class JwtEngine {
             res.deauthenticate = () => {
                 req.token = null;
                 req.signedToken = null;
-                jwtEngine._modifierTokenEngine.removeToken(res);
+                jwtEngine._clientTokenEngine.removeToken(res);
             };
 
             res.authenticate = (token = {}) => {
@@ -111,7 +111,7 @@ export default class JwtEngine {
         const signToken = jwt.sign(token,this._options.privateKey,this._signOptions);
         req.token = token;
         req.signedToken = signToken;
-        this._modifierTokenEngine.setToken(signToken,token,res);
+        this._clientTokenEngine.setToken(signToken,token,res);
         return signToken;
     }
 
@@ -121,7 +121,7 @@ export default class JwtEngine {
      * @param res
      */
     verify(req : express.Request, res : express.Response) {
-        const signedToken = this._modifierTokenEngine.getToken(req);
+        const signedToken = this._clientTokenEngine.getToken(req);
         if(signedToken !== null) {
             req.signedToken = signedToken;
             try {
@@ -131,7 +131,7 @@ export default class JwtEngine {
             }
             catch (e) {
                 req.token = null;
-                this._modifierTokenEngine.removeToken(res);
+                this._clientTokenEngine.removeToken(res);
                 this._options.onNotValidToken(signedToken,req,res);
             }
         }
@@ -162,7 +162,7 @@ export default class JwtEngine {
             algorithm : options.algorithm || 'HS256',
             expiresIn : options.expiresIn || '1 day',
             notBefore : options.notBefore,
-            modifierTokenEngine : options.modifierTokenEngine || CookieMTE,
+            clientTokenEngine : options.clientTokenEngine || CookieCTE,
             onNotValidToken : options.onNotValidToken || (() => {})
         };
     }
