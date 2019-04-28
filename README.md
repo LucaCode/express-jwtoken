@@ -89,13 +89,15 @@ This object can specify the following options:
                            The default value is a random string.
                            Notice that this option is only used if no public and private key is defined.
                            
-* `privateKey` (`string`) - The private secret key for encrypting and decrypt the token.
+* `privateKey` (`string`) - The private secret key to sign the token.
                             For using the private key, you also need to define the public key.
-                            Otherwise, the secret key will be used.                        
+                            Otherwise, the secret key will be used.
+                            Notice that you also have to use a proper algorithm.                        
 
-* `publicKey` (`string`) - The public secret key for encrypting and decrypt the token.
+* `publicKey` (`string`) - The public secret key to verifying the token.
                            For using the public key, you also need to define the private key.
-                           Otherwise, the secret key will be used.                                 
+                           Otherwise, the secret key will be used.
+                           Notice that you also have to use a proper algorithm.                                 
 
 * `expiresIn` (`string | number`) - Token expressed in seconds (number) or a string describing a time.
                                     If you use a string be sure you provide the time units (days, hours, etc),
