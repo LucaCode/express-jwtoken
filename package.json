@@ -1,6 +1,6 @@
 {
   "name": "express-jwtoken",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Simple express JSON Web Token library.",
   "license": "MIT",
   "main": "dist/index.js",
